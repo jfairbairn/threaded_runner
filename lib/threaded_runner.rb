@@ -1,20 +1,23 @@
 class ThreadedRunner
-  def initialize(cmd)
+  def initialize(cmd, wdir='.')
     @cmd = cmd
+    @wdir = wdir
   end
 
   attr_reader :thread
 
   def start(wait_for=nil)
     @thread = Thread.new do
-      IO.popen(@cmd) do |f|
-        @pid = f.pid
-        f.each_line do |line|
-          line.strip!
-          yield line if block_given?
-          if @regex && line =~ @regex
-            @gotit = true
-            @regex = nil
+      Dir.chdir(@wdir) do
+        IO.popen(@cmd) do |f|
+          @pid = f.pid
+          f.each_line do |line|
+            line.strip!
+            yield line if block_given?
+            if @regex && line =~ @regex
+              @gotit = true
+              @regex = nil
+            end
           end
         end
       end
