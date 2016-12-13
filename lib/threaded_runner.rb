@@ -7,21 +7,22 @@ class ThreadedRunner
   attr_reader :thread
 
   def start(wait_for=nil)
+    pwd = Dir.pwd
     @thread = Thread.new do
-      Dir.chdir(@wdir) do
-        IO.popen(@cmd) do |f|
-          @pid = f.pid
-          f.each_line do |line|
-            line.strip!
-            yield line if block_given?
-            if @regex && line =~ @regex
-              @gotit = true
-              @regex = nil
-            end
+      Dir.chdir(@wdir)
+      IO.popen(@cmd) do |f|
+        @pid = f.pid
+        f.each_line do |line|
+          line.strip!
+          yield line if block_given?
+          if @regex && line =~ @regex
+            @gotit = true
+            @regex = nil
           end
         end
       end
     end
+    Dir.chdir(pwd)
     nil
     wait_for(wait_for) if wait_for
   end

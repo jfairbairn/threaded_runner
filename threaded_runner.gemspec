@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'threaded_runner'
-  s.version     = '1.0.1'
+  s.version     = '1.0.2'
   s.licenses    = ['MIT']
   s.summary     = "A simple class to run subprocesses under test in a thread"
   s.description = <<-EOT
