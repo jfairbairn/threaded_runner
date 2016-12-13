@@ -1,15 +1,12 @@
 class ThreadedRunner
-  def initialize(cmd, wdir='.')
+  def initialize(cmd)
     @cmd = cmd
-    @wdir = wdir
   end
 
   attr_reader :thread
 
   def start(wait_for=nil)
-    pwd = Dir.pwd
     @thread = Thread.new do
-      Dir.chdir(@wdir)
       IO.popen(@cmd) do |f|
         @pid = f.pid
         f.each_line do |line|
@@ -22,7 +19,6 @@ class ThreadedRunner
         end
       end
     end
-    Dir.chdir(pwd)
     nil
     wait_for(wait_for) if wait_for
   end
