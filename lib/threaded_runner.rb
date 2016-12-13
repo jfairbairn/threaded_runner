@@ -34,7 +34,7 @@ class ThreadedRunner
     nil
   end
 
-  def stop
-    Process.kill("TERM", @pid)
+  def stop(sig="TERM")
+    Process.kill(sig, @pid)
   end
 end
